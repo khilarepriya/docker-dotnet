@@ -204,10 +204,10 @@ pipeline {
             } else if (lang == 'dotnet') {
               sh """#!/bin/bash
                 set -e
-                dotnet publish -c Release -o out
                 ${loginCmd}
                 docker build -t "${imageTag}" .
                 docker push "${imageTag}"
+                
                 sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/dotnet-app-template.service | sudo tee /etc/systemd/system/dotnet-app.service
                 sudo systemctl daemon-reload
               """
