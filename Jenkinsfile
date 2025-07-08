@@ -70,7 +70,7 @@ pipeline {
                   cd ${projectDir}
 
                   dotnet sonarscanner begin /k:"${SONAR_PROJECT}" /d:sonar.host.url=${SONAR_URL} /d:sonar.login=\$SONAR_TOKEN
-
+                  dotnet clean
                   dotnet restore
                   dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
 
