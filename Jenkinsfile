@@ -52,20 +52,29 @@ pipeline {
               sh "sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT} -Dsonar.sources=. -Dsonar.host.url=${SONAR_URL}"
             } else if (env.PROJECT_LANG == 'dotnet') {
               withCredentials([string(credentialsId: 'sonarqube-token-new', variable: 'SONAR_TOKEN')]) {
-                sh '''
-                  export PATH=$PATH:$HOME/.dotnet/tools
+                def projectDir = sh(script: "dirname ${env.CSPROJ_PATH}", returnStdout: true).trim()
+                sh """
+                  export PATH=\$PATH:\$HOME/.dotnet/tools
+
+                  # Install scanner if not already installed
                   dotnet tool install --global dotnet-sonarscanner || true
+
+                  cd ${projectDir}
+
+                  dotnet sonarscanner begin /k:"${SONAR_PROJECT}" /d:sonar.host.url=${SONAR_URL} /d:sonar.login=\$SONAR_TOKEN
+
                   dotnet restore
-                  dotnet sonarscanner begin /k:"''' + SONAR_PROJECT + '''" /d:sonar.host.url=''' + SONAR_URL + ''' /d:sonar.login=$SONAR_TOKEN
                   dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
-                  dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
-                '''
+
+                  dotnet sonarscanner end /d:sonar.login=\$SONAR_TOKEN
+                """
               }
             }
           }
         }
       }
     }
+
 
     stage('Snyk Scan') {
       steps {
