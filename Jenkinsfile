@@ -27,10 +27,13 @@ pipeline {
             env.PROJECT_LANG = 'nodejs'
           } else if (fileExists('requirements.txt') || fileExists('pyproject.toml')) {
             env.PROJECT_LANG = 'python'
-          } else if (!sh(script: "ls *.csproj", returnStatus: true)) {
-            env.PROJECT_LANG = 'dotnet'
           } else {
-            error("Unsupported project type.")
+            def csprojPath = sh(script: "find . -name '*.csproj' | head -n 1", returnStdout: true).trim()
+            if (csprojPath) {
+              env.PROJECT_LANG = 'dotnet'
+              env.CSPROJ_PATH = csprojPath // Optional: can be used in later stages
+          } else {
+            error("Unsupported project type: No recognizable project file found.")
           }
           echo "Detected language: ${env.PROJECT_LANG}"
         }
