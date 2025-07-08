@@ -111,17 +111,22 @@ pipeline {
                 snyk monitor --file=package.json --package-manager=npm
               '''
             } else if (env.PROJECT_LANG == 'dotnet') {
-              sh '''
-                snyk auth $SNYK_TOKEN
-                dotnet restore
-                snyk test --all-projects --severity-threshold=high || true
-                snyk monitor --all-projects
-              '''
+              sh """
+                snyk auth \$SNYK_TOKEN
+
+                # Restore using the detected .csproj path
+                dotnet restore "${env.CSPROJ_PATH}"
+
+                # Run Snyk test and monitor on the specific project file
+                snyk test --file="${env.CSPROJ_PATH}" --severity-threshold=high || true
+                snyk monitor --file="${env.CSPROJ_PATH}"
+              """
             }
           }
         }
       }
     }
+
 
     stage('Stop Service Before Deployment') {
       steps {
