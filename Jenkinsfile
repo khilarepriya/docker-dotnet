@@ -208,8 +208,13 @@ pipeline {
                 docker build -t "${imageTag}" .
                 docker push "${imageTag}"
                 
+
+                # Dynamically create systemd service with current build ID
+                echo "[INFO] Generating dotnet-app.service from template using BUILD_ID=${buildId}"
                 sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/dotnet-app-template.service | sudo tee /etc/systemd/system/dotnet-app.service
+                
                 sudo systemctl daemon-reload
+                sudo systemctl restart dotnet-app.service
               """
 
             } else {
