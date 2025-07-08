@@ -32,13 +32,15 @@ pipeline {
             if (csprojPath) {
               env.PROJECT_LANG = 'dotnet'
               env.CSPROJ_PATH = csprojPath // Optional: can be used in later stages
-          } else {
-            error("Unsupported project type: No recognizable project file found.")
+            } else {
+              error("Unsupported project type: No recognizable project file found.")
+            }
           }
           echo "Detected language: ${env.PROJECT_LANG}"
         }
       }
-    }
+     }
+
 
     stage('SonarQube Scan') {
       steps {
