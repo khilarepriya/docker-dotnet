@@ -28,7 +28,13 @@ pipeline {
           } else if (fileExists('requirements.txt') || fileExists('pyproject.toml')) {
             env.PROJECT_LANG = 'python'
           } else {
-            def csprojPath = sh(script: "find . -name '*.csproj' | head -n 1", returnStdout: true).trim()
+            def csprojPath = sh(
+              script: '''
+                find . -name '*.csproj' | grep -vi test | head -n 1
+              ''',
+              returnStdout: true
+            ).trim()
+
             if (csprojPath) {
               env.PROJECT_LANG = 'dotnet'
               env.CSPROJ_PATH = csprojPath // Optional: can be used in later stages
@@ -37,10 +43,12 @@ pipeline {
             }
           }
           echo "Detected language: ${env.PROJECT_LANG}"
+          if (env.PROJECT_LANG == 'dotnet') {
+            echo "Detected .csproj path: ${env.CSPROJ_PATH}"
         }
       }
-     }
-
+    }
+  }  
 
     stage('SonarQube Scan') {
       steps {
