@@ -3,10 +3,10 @@ pipeline {
 
   environment {
     SONAR_URL = 'http://ec2-13-202-47-19.ap-south-1.compute.amazonaws.com:15998/'
-    SONAR_PROJECT = 'docker-java1'
+    SONAR_PROJECT = 'docker-dotnet'
     EMAIL_RECIPIENT = 'p.khilare@accenture.com'
-    SERVICE_NAME = 'java-app'
-    DOCKER_HUB_REPO = 'priyanka015/java'
+    SERVICE_NAME = 'dotnet-app'
+    DOCKER_HUB_REPO = 'priyanka015/dotnet'
     KUBECONFIG = "/var/lib/jenkins/.kube/config"
     MINIKUBE_HOME = '/var/lib/jenkins'
   }
@@ -14,7 +14,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/khilarepriya/docker-java1.git'
+        git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/khilarepriya/docker-dotnet.git'
       }
     }
 
@@ -111,27 +111,80 @@ pipeline {
     stage('Docker Build & Push to Docker Hub') {
       steps {
         script {
-          env.IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_ID}"
-          withCredentials([usernamePassword(
-              credentialsId: 'docker-hub-credentials',
-              usernameVariable: 'DOCKER_USER',
-              passwordVariable: 'DOCKER_PASS'
-          )]) {
-            sh '''
-              # ✅ Build Java project before Docker build
-              mvn clean package -DskipTests
+          if (!env.DOCKER_HUB_REPO || !env.BUILD_ID || !env.PROJECT_LANG) {
+            error("DOCKER_HUB_REPO, BUILD_ID, or PROJECT_LANG is not set.")
+          }
 
-              # ✅ Docker login and push
-              echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-              docker build -t $DOCKER_HUB_REPO:$BUILD_ID .
-              docker push $DOCKER_HUB_REPO:$BUILD_ID
+          def buildId = env.BUILD_ID ?: env.BUILD_NUMBER
+          def lang = env.PROJECT_LANG
+          def imageTag = "priyanka015/${lang}:${buildId}"
+          def localTag = "${lang}-pipeline-app:latest"
 
-              echo "Docker image pushed successfully!"
+          echo "Using Docker Image Tag: ${imageTag}"
 
-              # Generate systemd service using template
-              sed "s/__BUILD_ID__/${BUILD_ID}/g" /etc/systemd/system/java-app-template.service | sudo tee /etc/systemd/system/java-app.service
-              sudo systemctl daemon-reload
-            '''
+          withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+            def loginCmd = 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+
+            if (lang == 'nodejs') {
+             sh """#!/bin/bash
+                set -e
+                npm install
+                ${loginCmd}
+                docker build -t "${imageTag}" .
+                docker push "${imageTag}"
+                docker tag "${imageTag}" "${localTag}"
+
+                echo "Validating Docker image tag..."
+                if [[ -z "${imageTag}" ]]; then
+                  echo "Image tag is empty. Exiting."
+                  exit 1
+                fi
+                docker pull "${imageTag}" || {
+                  echo "Image tag not found. Exiting."
+                  exit 1
+                }
+
+                echo "[INFO] Preparing systemd unit file..."
+                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/nodejs-app-template.service | sudo tee /etc/systemd/system/nodejs-app.service
+                sudo systemctl daemon-reload
+                sudo systemctl restart nodejs-app.service
+              """
+
+            } else if (lang == 'java') {
+              sh """#!/bin/bash
+                set -e
+                mvn clean package -DskipTests
+                ${loginCmd}
+                docker build -t "${imageTag}" .
+                docker push "${imageTag}"
+                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/java-app-template.service | sudo tee /etc/systemd/system/java-app.service
+                sudo systemctl daemon-reload
+              """
+
+            } else if (lang == 'python') {
+              sh """#!/bin/bash
+                set -e
+                ${loginCmd}
+                docker build -t "${imageTag}" .
+                docker push "${imageTag}"
+                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/python-app-template.service | sudo tee /etc/systemd/system/python-app.service
+                sudo systemctl daemon-reload
+              """
+
+            } else if (lang == 'dotnet') {
+              sh """#!/bin/bash
+                set -e
+                dotnet publish -c Release -o out
+                ${loginCmd}
+                docker build -t "${imageTag}" .
+                docker push "${imageTag}"
+                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/dotnet-app-template.service | sudo tee /etc/systemd/system/dotnet-app.service
+                sudo systemctl daemon-reload
+              """
+
+            } else {
+              error("Unsupported language: ${lang}")
+            }
           }
         }
       }
@@ -201,16 +254,12 @@ pipeline {
         script {
           sh '''
             echo "Waiting for service to stabilize..."
-            sleep 10
+            sleep(time: 10, unit: 'SECONDS')
             echo "Checking systemd service status..."
-            sudo systemctl status ${SERVICE_NAME}.service
-            echo "Performing sanity check via curl..."
-            if curl -f http://localhost:9091/health; then
-              echo "Sanity check passed"
-            else
-              echo "Sanity check failed"
-              exit 1
-            fi
+            sh "sudo systemctl status ${SERVICE_NAME}"
+
+            echo "Hitting health endpoint..."
+            sh "curl -f http://localhost:6060/health"
           '''
         }
       }
