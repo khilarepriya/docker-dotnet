@@ -111,15 +111,18 @@ pipeline {
                 snyk monitor --file=package.json --package-manager=npm
               '''
             } else if (env.PROJECT_LANG == 'dotnet') {
+              def csprojDir = sh(script: "dirname ${env.CSPROJ_PATH}", returnStdout: true).trim()
               sh """
                 snyk auth \$SNYK_TOKEN
 
-                # Restore using the detected .csproj path
-                dotnet restore "${env.CSPROJ_PATH}"
+                # Navigate to the directory containing the .csproj
+                cd "${csprojDir}"
 
-                # Run Snyk test and monitor on the specific project file
-                snyk test --file="${env.CSPROJ_PATH}" --severity-threshold=high || true
-                snyk monitor --file="${env.CSPROJ_PATH}"
+                dotnet restore
+
+                # Run Snyk without --file
+                snyk test --severity-threshold=high || true
+                snyk monitor 
               """
             }
           }
