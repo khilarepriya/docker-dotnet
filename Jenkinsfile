@@ -10,6 +10,8 @@ pipeline {
     KUBECONFIG = "/var/lib/jenkins/.kube/config"
     MINIKUBE_HOME = '/var/lib/jenkins'
     PYTHONPATH = "${env.WORKSPACE}"
+    DOTNET_ROOT = "${HOME}/.dotnet"
+    PATH = "${HOME}/.dotnet:${env.PATH}"
   }
 
   stages {
@@ -131,52 +133,50 @@ pipeline {
       }
     }
 
-    stage('Unit Test with Testcontainers') {
-      steps {
-        script {
-          if (env.PROJECT_LANG == 'java') {
-            sh 'mvn clean test'
-          } else if (env.PROJECT_LANG == 'python') {
-            sh '''#!/bin/bash
-              set -e
-              rm -rf venv
-              python3 -m venv venv
-              source venv/bin/activate
-              pip install --upgrade pip
-              pip install -r requirements.txt
-              pip install testcontainers pytest
-              export PYTHONPATH=$PWD
-              pytest
-            '''
-          } else if (env.PROJECT_LANG == 'nodejs') {
-            sh '''
-              npm install
-              npm install --save-dev jest testcontainers
-              npx jest
-            '''
-          } else if (env.PROJECT_LANG == 'dotnet') {
-            // Restore and build the main project
-            dir('src/DotNetApp') {
-              sh '''
-                echo "📦 Restoring and building main app..."
-                dotnet restore
-                dotnet build
-              '''
-            }
+        stage('Unit Test with Testcontainers') {
+          steps {
+            script {
+              if (env.PROJECT_LANG == 'java') {
+                sh 'mvn clean test'
+              } else if (env.PROJECT_LANG == 'python') {
+                sh '''#!/bin/bash
+                  set -e
+                  rm -rf venv
+                  python3 -m venv venv
+                  source venv/bin/activate
+                  pip install --upgrade pip
+                  pip install -r requirements.txt
+                  pip install testcontainers pytest
+                  export PYTHONPATH=$PWD
+                  pytest
+                '''
+              } else if (env.PROJECT_LANG == 'nodejs') {
+                sh '''
+                  npm install
+                  npm install --save-dev jest testcontainers
+                  npx jest
+                '''
+              } else if (env.PROJECT_LANG == 'dotnet') {
+                dir('src/DotNetApp') {
+                  sh '''
+                    echo "📦 Restoring and building main app..."
+                    ${DOTNET_ROOT}/dotnet restore
+                    ${DOTNET_ROOT}/dotnet build
+                  '''
+                }
 
-            // Restore, build, and test the test project
-            dir('tests/DotNetApp.Tests') {
-              sh '''
-                echo "🧪 Restoring, building, and testing..."
-                dotnet restore
-                dotnet build
-                dotnet test --logger:trx
-              '''
+                dir('tests/DotNetApp.Tests') {
+                  sh '''
+                    echo "🧪 Restoring, building, and testing..."
+                    ${DOTNET_ROOT}/dotnet restore
+                    ${DOTNET_ROOT}/dotnet build
+                    ${DOTNET_ROOT}/dotnet test --logger:trx
+                  '''
+                }
+              }
             }
           }
         }
-      }
-    }
 
     stage('Set Image Name') {
       steps {
