@@ -1,0 +1,163 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/DotNetApp.Tests.csproj": {}
+  },
+  "projects": {
+    "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj",
+        "projectName": "DotNetApp",
+        "projectPath": "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj",
+        "packagesPath": "/home/p_khilare/.nuget/packages/",
+        "outputPath": "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/p_khilare/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.117/RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/DotNetApp.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/DotNetApp.Tests.csproj",
+        "projectName": "DotNetApp.Tests",
+        "projectPath": "/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/DotNetApp.Tests.csproj",
+        "packagesPath": "/home/p_khilare/.nuget/packages/",
+        "outputPath": "/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/p_khilare/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj": {
+                "projectPath": "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.9.0, )"
+            },
+            "Testcontainers": {
+              "target": "Package",
+              "version": "[3.8.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.4.2, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.4.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.36, 6.0.36]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.117/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

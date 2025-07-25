@@ -2,6 +2,8 @@ using Xunit;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using System.Net.Http.Json;
+using System.Net.Http;
+using System.Threading.Tasks; // ✅ Required for Task
 
 public class HealthCheckTests
 {
