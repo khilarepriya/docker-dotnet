@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "czP/eGUtnnjXuzmqfGiojFzHwbMTXp2I47w3yBcxSz4=",
+  "Source": "DotNetApp",
+  "BasePath": "_content/DotNetApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

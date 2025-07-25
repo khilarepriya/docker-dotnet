@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "b8GXlliQ7xRlGOxfnomSn+IfGhjnZc43IoJzS6IfGg8OrRAu1PPPG9AT2RnGUD9IwMBrPUg16TTNPXTiv0fDRA==",
+  "success": true,
+  "projectFilePath": "/home/p_khilare/docker/docker-dotnet/src/DotNetApp/DotNetApp.csproj",
+  "expectedPackageFiles": [
+    "/home/p_khilare/.nuget/packages/microsoft.netcore.app.ref/6.0.36/microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
+    "/home/p_khilare/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.36/microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
+    "/home/p_khilare/.nuget/packages/microsoft.netcore.app.host.linux-x64/6.0.36/microsoft.netcore.app.host.linux-x64.6.0.36.nupkg.sha512"
+  ],
+  "logs": []
+}
