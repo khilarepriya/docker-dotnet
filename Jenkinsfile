@@ -155,13 +155,22 @@ pipeline {
               npx jest
             '''
           } else if (env.PROJECT_LANG == 'dotnet') {
-            dir('DotNetApp') {
+            // Restore and build the main project
+            dir('src/DotNetApp') {
               sh '''
-                echo "🧾 Listing current directory contents:"
-                ls -la
-                echo "🛠️ Restoring..."
-                dotnet restore DotNetApp.csproj
-                dotnet test DotNetApp.csproj
+                echo "📦 Restoring and building main app..."
+                dotnet restore
+                dotnet build
+              '''
+            }
+
+            // Restore, build, and test the test project
+            dir('tests/DotNetApp.Tests') {
+              sh '''
+                echo "🧪 Restoring, building, and testing..."
+                dotnet restore
+                dotnet build
+                dotnet test --logger:trx
               '''
             }
           }
