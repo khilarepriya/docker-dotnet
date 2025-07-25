@@ -157,8 +157,11 @@ pipeline {
           } else if (env.PROJECT_LANG == 'dotnet') {
             dir('DotNetApp') {
               sh '''
-                dotnet restore
-                dotnet test
+                echo "🧾 Listing current directory contents:"
+                ls -la
+                echo "🛠️ Restoring..."
+                dotnet restore DotNetApp.csproj
+                dotnet test DotNetApp.csproj
               '''
             }
           }
