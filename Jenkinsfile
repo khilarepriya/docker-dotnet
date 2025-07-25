@@ -11,7 +11,7 @@ pipeline {
     MINIKUBE_HOME = '/var/lib/jenkins'
     PYTHONPATH = "${env.WORKSPACE}"
     DOTNET_ROOT = "${HOME}/.dotnet"
-    PATH = "${HOME}/.dotnet:${env.PATH}"
+    PATH = "${HOME}/.dotnet:${HOME}/.dotnet/tools:${PATH}"
   }
 
   stages {
@@ -65,7 +65,8 @@ pipeline {
               withCredentials([string(credentialsId: 'sonarqube-token-new', variable: 'SONAR_TOKEN')]) {
                 def projectDir = sh(script: "dirname ${env.CSPROJ_PATH}", returnStdout: true).trim()
                 sh """
-                  export PATH=\$PATH:\$HOME/.dotnet/tools
+                  export DOTNET_ROOT=/home/p_khilare/.dotnet
+                  export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
 
                   # Install scanner if not already installed
                   dotnet tool install --global dotnet-sonarscanner || true
