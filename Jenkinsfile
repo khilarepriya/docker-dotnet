@@ -155,10 +155,12 @@ pipeline {
               npx jest
             '''
           } else if (env.PROJECT_LANG == 'dotnet') {
-            sh '''
-              dotnet restore
-              dotnet test
-            '''
+            dir('DotNetApp') {
+              sh '''
+                dotnet restore
+                dotnet test
+              '''
+            }
           }
         }
       }
