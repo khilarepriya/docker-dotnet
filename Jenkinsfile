@@ -9,6 +9,7 @@ pipeline {
     DOCKER_HUB_REPO = 'priyanka015/dotnet'
     KUBECONFIG = "/var/lib/jenkins/.kube/config"
     MINIKUBE_HOME = '/var/lib/jenkins'
+    PYTHONPATH = "${env.WORKSPACE}"
   }
 
   stages {
@@ -130,6 +131,93 @@ pipeline {
       }
     }
 
+    stage('Unit Test with Testcontainers') {
+      steps {
+        script {
+          if (env.PROJECT_LANG == 'java') {
+            sh 'mvn clean test'
+          } else if (env.PROJECT_LANG == 'python') {
+            sh '''#!/bin/bash
+              set -e
+              rm -rf venv
+              python3 -m venv venv
+              source venv/bin/activate
+              pip install --upgrade pip
+              pip install -r requirements.txt
+              pip install testcontainers pytest
+              export PYTHONPATH=$PWD
+              pytest
+            '''
+          } else if (env.PROJECT_LANG == 'nodejs') {
+            sh '''
+              npm install
+              npm install --save-dev jest testcontainers
+              npx jest
+            '''
+          } else if (env.PROJECT_LANG == 'dotnet') {
+            sh '''
+              dotnet restore
+              dotnet test
+            '''
+          }
+        }
+      }
+    }
+
+    stage('Set Image Name') {
+      steps {
+        script {
+          env.IMAGE_NAME = "${DOCKER_HUB_REPO}:${BUILD_ID}"
+          echo "✅ Image name set: ${env.IMAGE_NAME}"
+        }
+      }
+    }
+
+    stage('Generate Kubernetes YAML') {
+      steps {
+        script {
+          def deployManifest = """\
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${env.PROJECT_LANG}-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${env.PROJECT_LANG}-app
+  template:
+    metadata:
+      labels:
+        app: ${env.PROJECT_LANG}-app
+    spec:
+      containers:
+        - name: ${env.PROJECT_LANG}-container
+          image: ${env.IMAGE_NAME}
+          ports:
+            - containerPort: 80
+"""
+          writeFile file: 'deploy.yaml', text: deployManifest.trim() + '\n'
+          echo "✅ Generated clean deploy.yaml"
+          sh 'cat deploy.yaml'
+        }
+      }
+    }
+
+    stage('YAML Lint Validation') {
+      steps {
+        sh '''
+          if [ -f deploy.yaml ]; then
+            echo "🔍 Linting deploy.yaml"
+            yamllint deploy.yaml
+          else
+            echo "⚠️ deploy.yaml not found!"
+            exit 1
+          fi
+        '''
+      }
+    }
 
     stage('Stop Service Before Deployment') {
       steps {
@@ -141,90 +229,21 @@ pipeline {
     stage('Docker Build & Push to Docker Hub') {
       steps {
         script {
-          if (!env.DOCKER_HUB_REPO || !env.BUILD_ID || !env.PROJECT_LANG) {
-            error("DOCKER_HUB_REPO, BUILD_ID, or PROJECT_LANG is not set.")
-          }
-
-          def buildId = env.BUILD_ID ?: env.BUILD_NUMBER
-          def lang = env.PROJECT_LANG
-          def imageTag = "priyanka015/${lang}:${buildId}"
-          def localTag = "${lang}-pipeline-app:latest"
-
-          echo "Using Docker Image Tag: ${imageTag}"
-
-          withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            def loginCmd = 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-
-            if (lang == 'nodejs') {
-             sh """#!/bin/bash
-                set -e
-                npm install
-                ${loginCmd}
-                docker build -t "${imageTag}" .
-                docker push "${imageTag}"
-                docker tag "${imageTag}" "${localTag}"
-
-                echo "Validating Docker image tag..."
-                if [[ -z "${imageTag}" ]]; then
-                  echo "Image tag is empty. Exiting."
-                  exit 1
-                fi
-                docker pull "${imageTag}" || {
-                  echo "Image tag not found. Exiting."
-                  exit 1
-                }
-
-                echo "[INFO] Preparing systemd unit file..."
-                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/nodejs-app-template.service | sudo tee /etc/systemd/system/nodejs-app.service
-                sudo systemctl daemon-reload
-                sudo systemctl restart nodejs-app.service
-              """
-
-            } else if (lang == 'java') {
-              sh """#!/bin/bash
-                set -e
-                mvn clean package -DskipTests
-                ${loginCmd}
-                docker build -t "${imageTag}" .
-                docker push "${imageTag}"
-                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/java-app-template.service | sudo tee /etc/systemd/system/java-app.service
-                sudo systemctl daemon-reload
-              """
-
-            } else if (lang == 'python') {
-              sh """#!/bin/bash
-                set -e
-                ${loginCmd}
-                docker build -t "${imageTag}" .
-                docker push "${imageTag}"
-                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/python-app-template.service | sudo tee /etc/systemd/system/python-app.service
-                sudo systemctl daemon-reload
-              """
-
-            } else if (lang == 'dotnet') {
-              sh """#!/bin/bash
-                set -e
-                ${loginCmd}
-                docker build -t "${imageTag}" .
-                docker push "${imageTag}"
-                
-
-                # Dynamically create systemd service with current build ID
-                echo "[INFO] Generating dotnet-app.service from template using BUILD_ID=${buildId}"
-                sed "s/__BUILD_ID__/${buildId}/g" /etc/systemd/system/dotnet-app-template.service | sudo tee /etc/systemd/system/dotnet-app.service
-                
-                sudo systemctl daemon-reload
-                sudo systemctl restart dotnet-app.service
-              """
-
-            } else {
-              error("Unsupported language: ${lang}")
-            }
+          withCredentials([usernamePassword(
+            credentialsId: 'docker-hub-credentials',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_PASS'
+          )]) {
+            sh '''
+              echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+              docker build -t $DOCKER_HUB_REPO:$BUILD_ID .
+              docker push $DOCKER_HUB_REPO:$BUILD_ID
+              echo "✅ Docker image pushed successfully!"
+            '''
           }
         }
       }
     }
-
 
     stage('Start Service After Deployment') {
       steps {
@@ -236,30 +255,6 @@ pipeline {
     stage('Deploy to Kubernetes (Minikube)') {
       steps {
         script {
-          def deployManifest = """
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: ${env.PROJECT_LANG}-app
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                app: ${env.PROJECT_LANG}-app
-            template:
-              metadata:
-                labels:
-                  app: ${env.PROJECT_LANG}-app
-              spec:
-                containers:
-                - name: ${env.PROJECT_LANG}-container
-                  image: ${env.IMAGE_NAME}
-                  ports:
-                  - containerPort: 80
-          """
-          writeFile file: 'deploy.yaml', text: deployManifest
-          
-          // Start Minikube if not running and apply manifest
           sh '''
             echo "➡️  Starting or checking Minikube..."
             export MINIKUBE_HOME=/var/lib/jenkins
@@ -278,11 +273,11 @@ pipeline {
 
             echo "✅ Using KUBECONFIG at $KUBECONFIG"
             kubectl config use-context minikube
-            kubectl cluster-info
+            kubectl apply -f deploy.yaml
           '''
         }
       }
-    }
+    } 
 
     stage('Sanity Test') {
       steps {
