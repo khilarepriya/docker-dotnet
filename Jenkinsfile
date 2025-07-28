@@ -173,7 +173,7 @@ pipeline {
 
                 dotnet restore
                 dotnet build
-                dotnet test --logger:trx
+                /home/p_khilare/.dotnet/dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {
