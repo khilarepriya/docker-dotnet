@@ -156,6 +156,9 @@ pipeline {
             dir(appDir) {
               sh '''
                 echo 📦 Restoring and building main app...
+                export DOTNET_ROOT=/home/p_khilare/.dotnet
+                export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
+
                 dotnet restore
                 dotnet build --no-restore
               '''
@@ -164,6 +167,9 @@ pipeline {
             dir(testDir) {
               sh '''
                 echo "🧪 Restoring, building, and testing..."
+                export DOTNET_ROOT=/home/p_khilare/.dotnet
+                export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
+
                 dotnet restore
                 dotnet build
                 dotnet test --logger:trx
