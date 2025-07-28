@@ -76,18 +76,21 @@ pipeline {
 
                     # Use local tool manifest
                     dotnet new tool-manifest --force
-                    dotnet tool install dotnet-sonarscanner
+                    dotnet tool install dotnet-sonarscanner || true
 
-                    ./dotnet-tools/dotnet-sonarscanner begin \
-                    /k:"${SONAR_PROJECT}" \
-                    /d:sonar.host.url=${SONAR_URL} \
-                    /d:sonar.login=\$SONAR_TOKEN
+                    # Start SonarQube analysis using local tool
+                    dotnet tool run dotnet-sonarscanner begin \
+                      /k:"${SONAR_PROJECT}" \
+                      /d:sonar.host.url=${SONAR_URL} \
+                      /d:sonar.login=\$SONAR_TOKEN
 
                     dotnet clean
                     dotnet restore
                     dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
 
-                    ./dotnet-tools/dotnet-sonarscanner end /d:sonar.login=\$SONAR_TOKEN
+                    # End SonarQube analysis using local tool
+                    dotnet tool run dotnet-sonarscanner end \
+                      /d:sonar.login=\$SONAR_TOKEN
                   """ 
                 }
               }
