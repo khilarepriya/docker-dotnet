@@ -133,52 +133,55 @@ pipeline {
         }
       }
     }
+  
+    stage('Unit Test with Testcontainers') {
+      steps {
+        script {
+          if (env.PROJECT_LANG == 'dotnet') {
+            def appDir = "src/DotNetApp"
+            def testDir = "tests/DotNetApp.Tests"
 
-        stage('Unit Test with Testcontainers') {
-          steps {
-            script {
-              if (env.PROJECT_LANG == 'java') {
-                sh 'mvn clean test'
-              } else if (env.PROJECT_LANG == 'python') {
-                sh '''#!/bin/bash
-                  set -e
-                  rm -rf venv
-                  python3 -m venv venv
-                  source venv/bin/activate
-                  pip install --upgrade pip
-                  pip install -r requirements.txt
-                  pip install testcontainers pytest
-                  export PYTHONPATH=$PWD
-                  pytest
-                '''
-              } else if (env.PROJECT_LANG == 'nodejs') {
-                sh '''
-                  npm install
-                  npm install --save-dev jest testcontainers
-                  npx jest
-                '''
-              } else if (env.PROJECT_LANG == 'dotnet') {
-                dir('src/DotNetApp') {
-                  sh '''
-                    echo 📦 Restoring and building main app...
-                    dotnet restore DotNetApp.csproj
-                    dotnet build DotNetApp.csproj --no-restore
-                  '''
-                }
-
-                dir('tests/DotNetApp.Tests') {
-                  sh '''
-                    echo "🧪 Restoring, building, and testing..."
-                    ${DOTNET_ROOT}/dotnet restore
-                    ${DOTNET_ROOT}/dotnet build
-                    ${DOTNET_ROOT}/dotnet test --logger:trx
-                  '''
-                }
-              }
+            dir(appDir) {
+              sh '''
+                echo 📦 Restoring and building main app...
+                dotnet restore
+                dotnet build --no-restore
+              '''
             }
+
+            dir(testDir) {
+              sh '''
+                echo "🧪 Restoring, building, and testing..."
+                dotnet restore
+                dotnet build
+                dotnet test --logger:trx
+              '''
+            }
+          } else if (env.PROJECT_LANG == 'java') {
+            sh 'mvn clean test'
+          } else if (env.PROJECT_LANG == 'python') {
+            sh '''#!/bin/bash
+              set -e
+              rm -rf venv
+              python3 -m venv venv
+              source venv/bin/activate
+              pip install --upgrade pip
+              pip install -r requirements.txt
+              pip install testcontainers pytest
+              export PYTHONPATH=$PWD
+              pytest
+            '''
+          } else if (env.PROJECT_LANG == 'nodejs') {
+            sh '''
+              npm install
+              npm install --save-dev jest testcontainers
+              npx jest
+            '''
           }
         }
-
+      }
+    }
+      
     stage('Set Image Name') {
       steps {
         script {
