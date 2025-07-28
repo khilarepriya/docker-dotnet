@@ -169,6 +169,7 @@ pipeline {
                 echo "🧪 Restoring, building, and testing..."
                 export DOTNET_ROOT=/home/p_khilare/.dotnet
                 export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
+                export DOTNET_MULTILEVEL_LOOKUP=0
 
                 dotnet restore
                 dotnet build
