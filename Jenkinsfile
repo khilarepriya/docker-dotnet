@@ -58,33 +58,46 @@ pipeline {
             if (env.PROJECT_LANG == 'java') {
               sh 'mvn clean compile sonar:sonar -Dsonar.java.binaries=target/classes'
             } else if (env.PROJECT_LANG == 'python' || env.PROJECT_LANG == 'nodejs') {
-              sh "sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT} -Dsonar.sources=. -Dsonar.host.url=${SONAR_URL}"
+              sh """
+                sonar-scanner \
+                  -Dsonar.projectKey=${SONAR_PROJECT} \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=${SONAR_URL}
+              """
             } else if (env.PROJECT_LANG == 'dotnet') {
               withCredentials([string(credentialsId: 'sonarqube-token-new', variable: 'SONAR_TOKEN')]) {
                 def projectDir = sh(script: "dirname ${env.CSPROJ_PATH}", returnStdout: true).trim()
-                sh """
-                  export DOTNET_ROOT=/home/p_khilare/.dotnet
-                  export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
+                dir(projectDir) {
+                  sh """
+                    echo "📦 Starting .NET SonarQube analysis..."
 
-                  # Install scanner if not already installed
-                  dotnet tool install --global dotnet-sonarscanner || true
+                    export DOTNET_ROOT=/home/p_khilare/.dotnet
+                    export PATH=\$DOTNET_ROOT:\$DOTNET_ROOT/tools:\$PATH
 
-                  cd ${projectDir}
+                    # Ensure dotnet-sonarscanner is installed
+                    dotnet tool install --global dotnet-sonarscanner || true
 
-                  dotnet sonarscanner begin /k:"${SONAR_PROJECT}" /d:sonar.host.url=${SONAR_URL} /d:sonar.login=\$SONAR_TOKEN
-                  dotnet clean
-                  dotnet restore
-                  dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
+                    # Check if tool is available
+                    which dotnet-sonarscanner || { echo '❌ dotnet-sonarscanner not found in PATH'; exit 1; }
 
-                  dotnet sonarscanner end /d:sonar.login=\$SONAR_TOKEN
-                """
+                    dotnet sonarscanner begin \
+                      /k:"${SONAR_PROJECT}" \
+                      /d:sonar.host.url=${SONAR_URL} \
+                      /d:sonar.login=\$SONAR_TOKEN
+
+                    dotnet clean
+                    dotnet restore
+                    dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
+
+                    dotnet sonarscanner end /d:sonar.login=\$SONAR_TOKEN
+                  """
+                }
               }
             }
           }
         }
       }
     }
-
 
     stage('Snyk Scan') {
       steps {
