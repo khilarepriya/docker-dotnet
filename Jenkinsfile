@@ -171,6 +171,8 @@ pipeline {
                 export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
                 export DOTNET_MULTILEVEL_LOOKUP=0
 
+                chmod +x /home/p_khilare/.dotnet/dotnet  # ← permission fix
+
                 dotnet restore
                 dotnet build
                 /home/p_khilare/.dotnet/dotnet test --logger:trx
