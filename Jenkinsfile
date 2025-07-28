@@ -156,9 +156,6 @@ pipeline {
             dir(appDir) {
               sh '''
                 echo 📦 Restoring and building main app...
-                export DOTNET_ROOT=/home/p_khilare/.dotnet
-                export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
-
                 dotnet restore
                 dotnet build --no-restore
               '''
@@ -167,15 +164,9 @@ pipeline {
             dir(testDir) {
               sh '''
                 echo "🧪 Restoring, building, and testing..."
-                export DOTNET_ROOT=/home/p_khilare/.dotnet
-                export PATH=$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH
-                export DOTNET_MULTILEVEL_LOOKUP=0
-
-                chmod +x /home/p_khilare/.dotnet/dotnet
-
                 dotnet restore
                 dotnet build
-                /home/p_khilare/.dotnet/dotnet test --logger:trx
+                dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {
