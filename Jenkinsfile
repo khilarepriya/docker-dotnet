@@ -74,23 +74,21 @@ pipeline {
                     export DOTNET_ROOT=/home/p_khilare/.dotnet
                     export PATH=\$DOTNET_ROOT:\$DOTNET_ROOT/tools:\$PATH
 
-                    # Ensure dotnet-sonarscanner is installed
-                    dotnet tool install --global dotnet-sonarscanner || true
+                    # Use local tool manifest
+                    dotnet new tool-manifest --force
+                    dotnet tool install dotnet-sonarscanner
 
-                    # Check if tool is available
-                    which dotnet-sonarscanner || { echo '❌ dotnet-sonarscanner not found in PATH'; exit 1; }
-
-                    dotnet sonarscanner begin \
-                      /k:"${SONAR_PROJECT}" \
-                      /d:sonar.host.url=${SONAR_URL} \
-                      /d:sonar.login=\$SONAR_TOKEN
+                    ./dotnet-tools/dotnet-sonarscanner begin \
+                    /k:"${SONAR_PROJECT}" \
+                    /d:sonar.host.url=${SONAR_URL} \
+                    /d:sonar.login=\$SONAR_TOKEN
 
                     dotnet clean
                     dotnet restore
                     dotnet build || { echo "[ERROR] Build failed!"; exit 1; }
 
-                    dotnet sonarscanner end /d:sonar.login=\$SONAR_TOKEN
-                  """
+                    ./dotnet-tools/dotnet-sonarscanner end /d:sonar.login=\$SONAR_TOKEN
+                  """ 
                 }
               }
             }
