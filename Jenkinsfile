@@ -160,9 +160,9 @@ pipeline {
               } else if (env.PROJECT_LANG == 'dotnet') {
                 dir('src/DotNetApp') {
                   sh '''
-                    echo "📦 Restoring and building main app..."
-                    ${DOTNET_ROOT}/dotnet restore
-                    ${DOTNET_ROOT}/dotnet build
+                    echo 📦 Restoring and building main app...
+                    dotnet restore DotNetApp.csproj
+                    dotnet build DotNetApp.csproj --no-restore
                   '''
                 }
 
