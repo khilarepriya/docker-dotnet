@@ -10,8 +10,6 @@ pipeline {
     KUBECONFIG = "/var/lib/jenkins/.kube/config"
     MINIKUBE_HOME = '/var/lib/jenkins'
     PYTHONPATH = "${env.WORKSPACE}"
-    DOTNET_ROOT = "/home/p_khilare/.dotnet"
-    PATH = "/home/p_khilare/.dotnet:/home/p_khilare/.dotnet/tools:${env.PATH}"
   }
 
   stages {
