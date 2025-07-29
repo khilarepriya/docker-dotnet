@@ -1,7 +1,9 @@
+using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Xunit;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using Xunit;
 
 public class HealthCheckTests
 {
@@ -13,13 +15,16 @@ public class HealthCheckTests
         var container = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(imageName)
             .WithPortBinding(6060, 6060)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r
-                .ForPort(6060)
-                .ForPath("/health")))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(request =>
+                request.ForPort(6060).ForPath("/health")))
             .Build();
 
         await container.StartAsync();
-        Assert.True(container.State == TestcontainersStates.Running);
+
+        using var client = new HttpClient();
+        var response = await client.GetAsync("http://localhost:6060/health");
+        response.EnsureSuccessStatusCode();
+
         await container.StopAsync();
     }
 }
