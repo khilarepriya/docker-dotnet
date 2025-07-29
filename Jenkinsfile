@@ -153,25 +153,22 @@ pipeline {
             def appDir = "src/DotNetApp"
             def testDir = "tests/DotNetApp.Tests"
 
-            // ✅ Step 1: Build the Docker image for testcontainers
+            // ✅ Step 1: Build main app (no Docker build here!)
             dir(appDir) {
               sh '''
                 echo 📦 Restoring and building main app...
                 dotnet restore
                 dotnet build --no-restore
-
-                echo 🐳 Building docker image 'dotnetapp:latest' for Testcontainers...
-                docker build -t dotnetapp:latest .
               '''
             }
 
-            // ✅ Step 2: Run the Testcontainers-based unit test
+            // ✅ Step 2: Build Docker image from repo root & run tests
             dir(testDir) {
               sh '''
-                echo "🐳 Building docker image dotnetapp:latest for Testcontainers..."
+                echo 🐳 Building docker image 'dotnetapp:latest' for Testcontainers...
                 docker build -t dotnetapp:latest -f ../../Dockerfile ../../
 
-                echo "🧪 Restoring, building, and testing..."
+                echo 🧪 Restoring, building, and testing...
                 dotnet restore
                 dotnet build
                 TEST_IMAGE_NAME=dotnetapp:latest dotnet test --logger:trx
@@ -201,7 +198,7 @@ pipeline {
         }
       }
     }
-      
+  
     stage('Set Image Name') {
       steps {
         script {
