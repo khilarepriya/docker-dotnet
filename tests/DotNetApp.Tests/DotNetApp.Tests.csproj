@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Docker.DotNet" Version="3.125.5" />
+    <PackageReference Include="DotNet.Testcontainers" Version="1.7.0-beta.2269" />
     <ProjectReference Include="..\\..\\src\\DotNetApp\\DotNetApp.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageReference Include="Testcontainers" Version="3.8.0" />
-    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
   </ItemGroup>
 
 </Project>

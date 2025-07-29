@@ -9,9 +9,9 @@
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/DotNetApp.Tests.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/DotNetApp.Tests.pdb
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Docker.DotNet.dll
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Docker.DotNet.X509.dll
+/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/DotNet.Testcontainers.dll
+/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.Bcl.AsyncInterfaces.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.VisualStudio.CodeCoverage.Shim.dll
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.Extensions.Logging.Abstractions.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.TestPlatform.CoreUtilities.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.TestPlatform.PlatformAbstractions.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll
@@ -22,9 +22,6 @@
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/testhost.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Newtonsoft.Json.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/ICSharpCode.SharpZipLib.dll
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Renci.SshNet.dll
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/SshNet.Security.Cryptography.dll
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/Testcontainers.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/xunit.abstractions.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/xunit.assert.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/bin/Debug/net6.0/xunit.core.dll
@@ -102,7 +99,7 @@
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.AssemblyInfo.cs
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.csproj.CoreCompileInputs.cache
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.sourcelink.json
-/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.csproj.CopyComplete
+/home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetAp.8C94B487.Up2Date
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/refint/DotNetApp.Tests.dll
 /home/p_khilare/docker/docker-dotnet/tests/DotNetApp.Tests/obj/Debug/net6.0/DotNetApp.Tests.pdb

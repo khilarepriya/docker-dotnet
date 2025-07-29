@@ -8,9 +8,10 @@
     ".NETCoreApp,Version=v6.0": {
       "DotNetApp.Tests/1.0.0": {
         "dependencies": {
+          "Docker.DotNet": "3.125.5",
+          "DotNet.Testcontainers": "1.7.0-beta.2269",
           "DotNetApp": "1.0.0",
           "Microsoft.NET.Test.Sdk": "17.9.0",
-          "Testcontainers": "3.8.0",
           "xunit": "2.4.2",
           "xunit.runner.visualstudio": "2.4.5"
         },
@@ -18,27 +19,39 @@
           "DotNetApp.Tests.dll": {}
         }
       },
-      "Docker.DotNet/3.125.15": {
+      "Docker.DotNet/3.125.5": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.Buffers": "4.5.1",
           "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
-          "lib/netstandard2.1/Docker.DotNet.dll": {
+          "lib/netstandard2.0/Docker.DotNet.dll": {
             "assemblyVersion": "3.125.0.0",
-            "fileVersion": "3.125.15.1"
+            "fileVersion": "3.125.5.0"
           }
         }
       },
-      "Docker.DotNet.X509/3.125.15": {
+      "DotNet.Testcontainers/1.7.0-beta.2269": {
         "dependencies": {
-          "Docker.DotNet": "3.125.15"
+          "Docker.DotNet": "3.125.5",
+          "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
+          "Microsoft.Extensions.Logging.Abstractions": "3.1.23",
+          "SharpZipLib": "1.3.3",
+          "System.Text.Json": "4.7.2"
         },
         "runtime": {
-          "lib/netstandard2.1/Docker.DotNet.X509.dll": {
-            "assemblyVersion": "3.125.0.0",
-            "fileVersion": "3.125.15.1"
+          "lib/netstandard2.1/DotNet.Testcontainers.dll": {
+            "assemblyVersion": "1.7.0.0",
+            "fileVersion": "1.7.0.0"
+          }
+        }
+      },
+      "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "4.700.20.21406"
           }
         }
       },
@@ -50,14 +63,7 @@
           }
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/6.0.4": {
-        "runtime": {
-          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.1823.26907"
-          }
-        }
-      },
+      "Microsoft.Extensions.Logging.Abstractions/3.1.23": {},
       "Microsoft.NET.Test.Sdk/17.9.0": {
         "dependencies": {
           "Microsoft.CodeCoverage": "17.9.0",
@@ -423,30 +429,11 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
-      "SharpZipLib/1.4.2": {
+      "SharpZipLib/1.3.3": {
         "runtime": {
-          "lib/net6.0/ICSharpCode.SharpZipLib.dll": {
-            "assemblyVersion": "1.4.2.13",
-            "fileVersion": "1.4.2.13"
-          }
-        }
-      },
-      "SSH.NET/2023.0.0": {
-        "dependencies": {
-          "SshNet.Security.Cryptography": "1.3.0"
-        },
-        "runtime": {
-          "lib/net6.0/Renci.SshNet.dll": {
-            "assemblyVersion": "2023.0.0.0",
-            "fileVersion": "2023.0.0.0"
-          }
-        }
-      },
-      "SshNet.Security.Cryptography/1.3.0": {
-        "runtime": {
-          "lib/netstandard2.0/SshNet.Security.Cryptography.dll": {
-            "assemblyVersion": "1.3.0.0",
-            "fileVersion": "1.3.0.0"
+          "lib/netstandard2.1/ICSharpCode.SharpZipLib.dll": {
+            "assemblyVersion": "1.3.3.11",
+            "fileVersion": "1.3.3.11"
           }
         }
       },
@@ -937,6 +924,7 @@
           "System.Text.Encoding": "4.3.0"
         }
       },
+      "System.Text.Json/4.7.2": {},
       "System.Text.RegularExpressions/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -996,21 +984,6 @@
           "System.Text.Encoding": "4.3.0",
           "System.Threading": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.0"
-        }
-      },
-      "Testcontainers/3.8.0": {
-        "dependencies": {
-          "Docker.DotNet": "3.125.15",
-          "Docker.DotNet.X509": "3.125.15",
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
-          "SSH.NET": "2023.0.0",
-          "SharpZipLib": "1.4.2"
-        },
-        "runtime": {
-          "lib/net6.0/Testcontainers.dll": {
-            "assemblyVersion": "3.8.0.0",
-            "fileVersion": "3.8.0.0"
-          }
         }
       },
       "xunit/2.4.2": {
@@ -1073,7 +1046,10 @@
       "xunit.runner.visualstudio/2.4.5": {},
       "DotNetApp/1.0.0": {
         "runtime": {
-          "DotNetApp.dll": {}
+          "DotNetApp.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
@@ -1084,19 +1060,26 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Docker.DotNet/3.125.15": {
+    "Docker.DotNet/3.125.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XN8FKxVv8Mjmwu104/Hl9lM61pLY675s70gzwSj8KR5pwblo8HfWLcCuinh9kYsqujBkMH4HVRCEcRuU6al4BQ==",
-      "path": "docker.dotnet/3.125.15",
-      "hashPath": "docker.dotnet.3.125.15.nupkg.sha512"
+      "sha512": "sha512-1tClPIBzz/7HP1XejCdTiRMviVRtS14omyRhHD0R6086woRRBCh61hJeVrpL6CVTnsRui4X9qaI8wO8xOCqKkQ==",
+      "path": "docker.dotnet/3.125.5",
+      "hashPath": "docker.dotnet.3.125.5.nupkg.sha512"
     },
-    "Docker.DotNet.X509/3.125.15": {
+    "DotNet.Testcontainers/1.7.0-beta.2269": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ONQN7ImrL3tHStUUCCPHwrFFQVpIpE+7L6jaDAMwSF+yTEmeWBmRARQZDRuvfj/+WtB8RR0oTW0tT3qQMSyHOw==",
-      "path": "docker.dotnet.x509/3.125.15",
-      "hashPath": "docker.dotnet.x509.3.125.15.nupkg.sha512"
+      "sha512": "sha512-4pdcCDAaR+sUfyTLXZMXIK1nUtERYUGZRDAWwQDIoVIj/lVrC1tSH15JZMVtbh8Sm3T6VdzODn1ItYvv39OxFA==",
+      "path": "dotnet.testcontainers/1.7.0-beta.2269",
+      "hashPath": "dotnet.testcontainers.1.7.0-beta.2269.nupkg.sha512"
+    },
+    "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w==",
+      "path": "microsoft.bcl.asyncinterfaces/1.1.1",
+      "hashPath": "microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512"
     },
     "Microsoft.CodeCoverage/17.9.0": {
       "type": "package",
@@ -1105,12 +1088,12 @@
       "path": "microsoft.codecoverage/17.9.0",
       "hashPath": "microsoft.codecoverage.17.9.0.nupkg.sha512"
     },
-    "Microsoft.Extensions.Logging.Abstractions/6.0.4": {
+    "Microsoft.Extensions.Logging.Abstractions/3.1.23": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-K14wYgwOfKVELrUh5eBqlC8Wvo9vvhS3ZhIvcswV2uS/ubkTRPSQsN557EZiYUSSoZNxizG+alN4wjtdyLdcyw==",
-      "path": "microsoft.extensions.logging.abstractions/6.0.4",
-      "hashPath": "microsoft.extensions.logging.abstractions.6.0.4.nupkg.sha512"
+      "sha512": "sha512-aDuo9aaLtp+O/BEVcjLrRCKh69KnYq4M+bsK16bmQHZJVsRtY9XJTfLU0gCASXf9JWlqKaF7sDfXmfcd/2HoCg==",
+      "path": "microsoft.extensions.logging.abstractions/3.1.23",
+      "hashPath": "microsoft.extensions.logging.abstractions.3.1.23.nupkg.sha512"
     },
     "Microsoft.NET.Test.Sdk/17.9.0": {
       "type": "package",
@@ -1280,26 +1263,12 @@
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
     },
-    "SharpZipLib/1.4.2": {
+    "SharpZipLib/1.3.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A==",
-      "path": "sharpziplib/1.4.2",
-      "hashPath": "sharpziplib.1.4.2.nupkg.sha512"
-    },
-    "SSH.NET/2023.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-g+3VDUrYhm0sqSxmlQFgRFrmBxhQvVh4pfn4pqjkX7WXE3tTjt1tIsOtjuz3mz/5s8gFFQVRydwCJ7Ohs54sJA==",
-      "path": "ssh.net/2023.0.0",
-      "hashPath": "ssh.net.2023.0.0.nupkg.sha512"
-    },
-    "SshNet.Security.Cryptography/1.3.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-5pBIXRjcSO/amY8WztpmNOhaaCNHY/B6CcYDI7FSTgqSyo/ZUojlLiKcsl+YGbxQuLX439qIkMfP0PHqxqJi/Q==",
-      "path": "sshnet.security.cryptography/1.3.0",
-      "hashPath": "sshnet.security.cryptography.1.3.0.nupkg.sha512"
+      "sha512": "sha512-N8+hwhsKZm25tDJfWpBSW7EGhH/R7EMuiX+KJ4C4u+fCWVc1lJ5zg1u3S1RPPVYgTqhx/C3hxrqUpi6RwK5+Tg==",
+      "path": "sharpziplib/1.3.3",
+      "hashPath": "sharpziplib.1.3.3.nupkg.sha512"
     },
     "System.AppContext/4.3.0": {
       "type": "package",
@@ -1630,6 +1599,13 @@
       "path": "system.text.encoding.extensions/4.3.0",
       "hashPath": "system.text.encoding.extensions.4.3.0.nupkg.sha512"
     },
+    "System.Text.Json/4.7.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TcMd95wcrubm9nHvJEQs70rC0H/8omiSGGpU4FQ/ZA1URIqD4pjmFJh2Mfv1yH1eHgJDWTi2hMDXwTET+zOOyg==",
+      "path": "system.text.json/4.7.2",
+      "hashPath": "system.text.json.4.7.2.nupkg.sha512"
+    },
     "System.Text.RegularExpressions/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -1678,13 +1654,6 @@
       "sha512": "sha512-5zJ0XDxAIg8iy+t4aMnQAu0MqVbqyvfoUVl1yDV61xdo3Vth45oA2FoY4pPkxYAH5f8ixpmTqXeEIya95x0aCQ==",
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
-    },
-    "Testcontainers/3.8.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-R0+4VTGtFm+Q50+dP7Rm+ZB6thjKdBF3mGYbh5dEf/qt+r35MdFx8tMsE0VIbtaqgJMsOSD06CUZB2wPqBe2cw==",
-      "path": "testcontainers/3.8.0",
-      "hashPath": "testcontainers.3.8.0.nupkg.sha512"
     },
     "xunit/2.4.2": {
       "type": "package",

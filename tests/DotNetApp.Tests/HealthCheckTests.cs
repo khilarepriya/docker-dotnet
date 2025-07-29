@@ -14,9 +14,9 @@ public class HealthCheckTests
 
         var container = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(imageName)
-            .WithPortBinding(6060, 6060)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(request =>
-                request.ForPort(6060).ForPath("/health")))
+            .WithPortBinding(6060, true)
+            .WithWaitStrategy(Wait.ForUnixContainer()
+                .UntilPortIsAvailable(6060)) // ✅ Use UntilPortIsAvailable in 1.x versions
             .Build();
 
         await container.StartAsync();
