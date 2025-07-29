@@ -10,6 +10,7 @@ pipeline {
     KUBECONFIG = "/var/lib/jenkins/.kube/config"
     MINIKUBE_HOME = '/var/lib/jenkins'
     PYTHONPATH = "${env.WORKSPACE}"
+    TESTCONTAINERS_RYUK_DISABLED=true
   }
 
   stages {
@@ -171,7 +172,7 @@ pipeline {
                 echo 🧪 Restoring, building, and testing...
                 dotnet restore
                 dotnet build
-                TEST_IMAGE_NAME=dotnetapp:latest dotnet test --logger:trx
+                TESTCONTAINERS_RYUK_DISABLED=true TEST_IMAGE_NAME=dotnetapp:latest dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {
