@@ -168,10 +168,13 @@ pipeline {
             // ✅ Step 2: Run the Testcontainers-based unit test
             dir(testDir) {
               sh '''
+                echo "🐳 Building docker image dotnetapp:latest for Testcontainers..."
+                docker build -t dotnetapp:latest -f ../../Dockerfile ../../
+
                 echo "🧪 Restoring, building, and testing..."
                 dotnet restore
                 dotnet build
-                TEST_IMAGE_NAME=${env.IMAGE_NAME} dotnet test --logger:trx
+                TEST_IMAGE_NAME=dotnetapp:latest dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {

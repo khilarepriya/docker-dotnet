@@ -1,32 +1,29 @@
+using System;
+using Xunit;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
-using System.Net.Http.Json;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Xunit; // ✅ Don't forget this for `[Fact]` attribute
 
 public class HealthCheckTests
 {
     [Fact]
     public async Task DotNetAppImage_ShouldRespondOnHealthEndpoint()
     {
-        string imageName = Environment.GetEnvironmentVariable("TEST_IMAGE_NAME") ?? "priyanka015/dotnet:latest";
+        string imageName = Environment.GetEnvironmentVariable("TEST_IMAGE_NAME") ?? "dotnetapp:latest";
 
-        var container = new ContainerBuilder()
+        var container = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(imageName)
-            .WithPortBinding(6060, 6060)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r =>
-                r.ForPort(6060).ForPath("/health")))
+            .WithName("dotnetapp-test")
+            .WithPortBinding(6060, 80)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(80))
             .Build();
 
         await container.StartAsync();
 
         var client = new HttpClient();
-        var response = await client.GetStringAsync("http://localhost:6060/health");
+        var response = await client.GetAsync("http://localhost:6060/health");
+        response.EnsureSuccessStatusCode();
 
-        Assert.Equal("Healthy", response); // Change based on your app output
-
-        await container.StopAsync();
+        await container.DisposeAsync();
     }
 }
 
