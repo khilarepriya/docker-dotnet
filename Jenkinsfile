@@ -172,7 +172,7 @@ pipeline {
                 echo 🧪 Restoring, building, and testing...
                 dotnet restore
                 dotnet build
-                TESTCONTAINERS_RYUK_DISABLED=true TEST_IMAGE_NAME=dotnetapp:latest dotnet test --logger:trx
+                TEST_IMAGE_NAME=dotnetapp:latest TESTCONTAINERS_RYUK_DISABLED=true dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {
