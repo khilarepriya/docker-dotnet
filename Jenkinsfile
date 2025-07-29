@@ -153,20 +153,25 @@ pipeline {
             def appDir = "src/DotNetApp"
             def testDir = "tests/DotNetApp.Tests"
 
+            // ✅ Step 1: Build the Docker image for testcontainers
             dir(appDir) {
               sh '''
                 echo 📦 Restoring and building main app...
                 dotnet restore
                 dotnet build --no-restore
+
+                echo 🐳 Building docker image 'dotnetapp:latest' for Testcontainers...
+                docker build -t dotnetapp:latest .
               '''
             }
 
+            // ✅ Step 2: Run the Testcontainers-based unit test
             dir(testDir) {
               sh '''
                 echo "🧪 Restoring, building, and testing..."
                 dotnet restore
                 dotnet build
-                dotnet test --logger:trx
+                TEST_IMAGE_NAME=${env.IMAGE_NAME} dotnet test --logger:trx
               '''
             }
           } else if (env.PROJECT_LANG == 'java') {
