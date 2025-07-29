@@ -1,3 +1,10 @@
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
+using System.Net.Http.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit; // ✅ Don't forget this for `[Fact]` attribute
+
 public class HealthCheckTests
 {
     [Fact]
